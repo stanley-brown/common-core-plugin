@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<name>common-core-plugin</name>
 	<description>Mule plugin of configurations that can be shared by other apps and templates.</description>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ORG_ID_TOKEN</groupId>
 	<artifactId>common-core-plugin</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
+	<name>${project.artifactId}</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<app.runtime>4.5.3</app.runtime>
-		<mule.maven.plugin.version>4.0.0</mule.maven.plugin.version>
+		<app.runtime>4.6.2</app.runtime>
+		<mule.maven.plugin.version>4.1.2</mule.maven.plugin.version>
 	</properties>
 
 	<build>
@@ -34,18 +34,15 @@
 		</plugins>
 	</build>
 
-	<dependencies>
-	</dependencies>
+	<dependencies/>
 
 	<distributionManagement>
 		<repository>
 			<id>anypoint-exchange-v3</id>
-			<name>Mule Repo</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
 			<layout>default</layout>
 		</repository>
 	</distributionManagement>
-	
 	<repositories>
 		<repository>
 			<id>anypoint-exchange-v3</id>

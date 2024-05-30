@@ -1,7 +1,7 @@
 %dw 2.0
 output application/json
 ---
-error.errorType.asString as String match {
+(error.errorType.namespace default "ERROR") ++ ":" ++ (error.errorType.identifier default "UNKNOWN") match {
     // List of all standard API-related errors.
 	case "APIKIT:BAD_REQUEST" -> {
 		"code": 400,
