@@ -36,7 +36,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				</ee:message>
 				<ee:variables>
 					<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
-import modules::dwOps
+import dwl::Utils
 import try from dw::Runtime
 output application/json
 var parsedPayload = (if (p('log.includePayload')) try(()->write(payload, "application/json")).result default "Unable to parse payload" else "")
@@ -45,7 +45,7 @@ var parsedPayload = (if (p('log.includePayload')) try(()->write(payload, "applic
 	payload: parsedPayload
 }
 ++ (if (vars.logMessage?) "message": vars.logMessage else {})
-++ (if (!isBlank(p('log.attributes'))) "attributes": dwOps::flattenObject(attributes,"") filterObject(p('log.attributes') splitBy(/,\s*/) contains $$ as String) else {})
+++ (if (!isBlank(p('log.attributes'))) "attributes": Utils::flattenObject(attributes,"") filterObject(p('log.attributes') splitBy(/,\s*/) contains $$ as String) else {})
 ++ (if (!isEmpty(error)) 	"error": {
 		"type" : (error.errorType.namespace default "ERROR") ++ ":" ++ (error.errorType.identifier default "UNKNOWN"),
 		"description": error.description
@@ -56,7 +56,7 @@ var parsedPayload = (if (p('log.includePayload')) try(()->write(payload, "applic
 	<sub-flow name="set-http-response-payload" doc:id="5233bc2e-f64c-44ce-993c-29f5e14a9ed3" >
 		<ee:transform doc:name="Set HTTP Response Payload" doc:id="6fcf5420-9a07-475a-9550-dae6555ba705">
 					<ee:message>
-				<ee:set-payload resource="set-http-response.dwl" />
+				<ee:set-payload resource="dwl/HttpResponse.dwl" />
 					</ee:message>
 					<ee:variables>
 					</ee:variables>

@@ -2,7 +2,7 @@
 output application/json
 ---
 (error.errorType.namespace default "ERROR") ++ ":" ++ (error.errorType.identifier default "UNKNOWN") match {
-    // List of all standard API-related errors.
+	// List of all standard API-related errors.
 	case "APIKIT:BAD_REQUEST" -> {
 		"code": 400,
 		"reason": "Bad Request",
@@ -60,7 +60,7 @@ output application/json
 		"reason": "Not Acceptable",
 	}
 	case "HTTP:TIMEOUT" -> {
-		"code":408,
+		"code": 408,
 		"reason": "Request Timeout",
 	}
 	case "APIKIT:UNSUPPORTED_MEDIA_TYPE" -> {
@@ -72,8 +72,8 @@ output application/json
 		"reason": "Unsupported Media Type",
 	}
 	case "HTTP:TOO_MANY_REQUESTS" -> {
-      "code": 429,
-      "reason": "Too Many Requests",
+		"code": 429,
+		"reason": "Too Many Requests",
 	}
 	case "APIKIT:NOT_IMPLEMENTED" -> {
 		"code": 501,
@@ -103,5 +103,5 @@ output application/json
 	else -> {
 		code: 500,
 		reason: "Server Error",
-    }
+	}
 }
