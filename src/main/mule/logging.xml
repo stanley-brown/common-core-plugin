@@ -20,6 +20,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</when>
 		</choice>
 	</sub-flow>
+	<sub-flow name="log-apiStart" doc:id="0da4d0c1-604d-4f8a-ad60-1abc55e73383" >
+		<set-variable value="API Start" doc:name="Set Variable" doc:id="925ad959-f730-4029-922b-5d14e27bc890" variableName="logMessage" />
+		<flow-ref doc:name="Call Create Log Message" doc:id="7886555f-158b-43b5-adb5-08c1ab1be9bd" name="create-log-message-subFlow" />
+		<logger level="INFO" doc:name="Log WARN" doc:id="0a258fcb-3d7b-4059-b0ed-b46046e3f3f6" message="#[vars.logMessage]" />
+	</sub-flow>
 	<sub-flow name="log-warn-subFlow" doc:id="69f618ce-ca55-46d3-bd56-53a9758765d6" >
 		<flow-ref doc:name="Call Create Log Message" doc:id="cd531788-9c34-45b2-ac73-5ad748b78b79" name="create-log-message-subFlow" />
 		<logger level="WARN" doc:name="Log WARN" doc:id="e340f15a-f0c8-408a-867f-a69c1ce6f6cb" message="#[vars.logMessage]" />
