@@ -20,10 +20,58 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</when>
 		</choice>
 	</sub-flow>
+	<sub-flow name="log-payload" doc:id="afc631bf-6693-4d1e-a7aa-6649bcbe5bd7" >
+		<ee:transform doc:name="Transform Message" doc:id="d6d76abc-8ab5-4202-a831-92364e554dcf" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+import try from dw::Runtime
+output application/json
+
+fun parsePayload(payload, maxSize) = 
+    if (sizeOf(payload.^raw) < maxSize)  
+        try(()->write(payload, "application/json")).result default "<<Unable to parse payload>>"
+    else "<<Payload size exceeded max size to output>>"
+---
+{
+	payload: parsePayload(payload, p('log.payload.maxSize'))
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log INFO" doc:id="b985d548-186e-4eb0-9bc7-556c9ab13648" message="#[vars.logMessage]" />
+	</sub-flow>
 	<sub-flow name="log-apiStart" doc:id="0da4d0c1-604d-4f8a-ad60-1abc55e73383" >
-		<set-variable value="API Start" doc:name="Set Variable" doc:id="925ad959-f730-4029-922b-5d14e27bc890" variableName="logMessage" />
-		<flow-ref doc:name="Call Create Log Message" doc:id="7886555f-158b-43b5-adb5-08c1ab1be9bd" name="create-log-message-subFlow" />
-		<logger level="INFO" doc:name="Log WARN" doc:id="0a258fcb-3d7b-4059-b0ed-b46046e3f3f6" message="#[vars.logMessage]" />
+		<ee:transform doc:name="Transform Message" doc:id="e34407ec-72f3-4e92-ab29-e2bdc4750202" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+import dwl::Utils
+output application/json
+---
+{
+	message: "API Start"
+}
+++ (if (!isBlank(p('log.attributes'))) "attributes": Utils::flattenObject(attributes,"") filterObject(p('log.attributes') splitBy(/,\s*/) contains $$ as String) else {})]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log INFO" doc:id="0a258fcb-3d7b-4059-b0ed-b46046e3f3f6" message="#[vars.logMessage]" />
+	</sub-flow>
+	<sub-flow name="log-apiEnd" doc:id="39c4272a-069f-402d-8444-27839f293b45" >
+		<ee:transform doc:name="Transform Message" doc:id="ccda9afa-0f38-4c68-bdf4-9e943ff34a92" >
+			<ee:message >
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	message: "API End"
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Log INFO" doc:id="40fc8e21-a0a2-4a4a-98b3-b65e4fcde6bd" message="#[vars.logMessage]" />
 	</sub-flow>
 	<sub-flow name="log-warn-subFlow" doc:id="69f618ce-ca55-46d3-bd56-53a9758765d6" >
 		<flow-ref doc:name="Call Create Log Message" doc:id="cd531788-9c34-45b2-ac73-5ad748b78b79" name="create-log-message-subFlow" />
@@ -35,16 +83,11 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 				</ee:message>
 				<ee:variables>
 					<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
-import dwl::Utils
-import try from dw::Runtime
 output application/json
-var parsedPayload = (if (p('log.payload')) try(()->write(payload, "application/json")).result default "Unable to parse payload" else {})
 ---
 {
-	payload: parsedPayload
 }
 ++ (if (vars.logMessage?) "message": vars.logMessage else {})
-++ (if (!isBlank(p('log.attributes'))) "attributes": Utils::flattenObject(attributes,"") filterObject(p('log.attributes') splitBy(/,\s*/) contains $$ as String) else {})
 ++ (if (!isEmpty(error)) 	"error": {
 		"type" : (error.errorType.namespace default "ERROR") ++ ":" ++ (error.errorType.identifier default "UNKNOWN"),
 		"description": error.description
