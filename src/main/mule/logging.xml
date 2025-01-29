@@ -4,13 +4,15 @@
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
-	<sub-flow name="log-info-subFlow" doc:id="5aeb9501-f487-4aba-a88a-2ef149bb5c36" >
-		<flow-ref doc:name="Call Create Log Message" doc:id="10fed706-be81-416f-a262-30fc91788f7c" name="create-log-message-subFlow" />
+	<sub-flow name="log-info" doc:id="5aeb9501-f487-4aba-a88a-2ef149bb5c36" >
+		<flow-ref doc:name="Call Create Log Message" doc:id="10fed706-be81-416f-a262-30fc91788f7c" name="create-log-message" />
 		<logger level="INFO" doc:name="Log INFO" doc:id="fc6c080c-b4d9-4483-9524-2494e90b1c76" message="#[vars.logMessage]" />
+		<remove-variable doc:name="Remove logMessage Variable" doc:id="0f39b3cd-2dde-49e4-8c7b-2cf845ba1324" variableName="logMessage " />
 	</sub-flow>
-	<sub-flow name="log-error-subFlow" doc:id="7c61d9b1-e563-4117-a4b7-853017ec79a3" >
-		<flow-ref doc:name="Call Create Log Message" doc:id="95e25832-2edb-4643-832f-d1d2a808822a" name="create-log-message-subFlow" />
+	<sub-flow name="log-error" doc:id="7c61d9b1-e563-4117-a4b7-853017ec79a3" >
+		<flow-ref doc:name="Call Create Log Message" doc:id="95e25832-2edb-4643-832f-d1d2a808822a" name="create-log-message" />
 		<logger level="ERROR" doc:name="Log ERROR" doc:id="cecb11d6-f846-41ec-a1d4-fc5c05a566c1" message="#[vars.logMessage]" />
+		<remove-variable doc:name="Remove logMessage Variable" doc:id="5e43ae9d-50be-42a9-8a48-5bf718ac2759" variableName="logMessage " />
 		<choice doc:name="Choice if HTTP Request, we need to generate proper response" doc:id="e30b9ea7-2784-4d7f-be54-e0ff6d6634c7" >
 			<when expression="#[!isEmpty(error) and !isEmpty(attributes.headers.soapaction)]">
 				<flow-ref doc:name="Set SOAP Response Payload" doc:id="3b79dc57-8e1f-4e3c-bc6e-f55f192b19fa" name="set-soap-response-payload"/>
@@ -27,7 +29,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			<ee:variables >
 				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
 import try from dw::Runtime
-output application/json
+output application/json indent=false
 
 fun parsePayload(payload, maxSize) = 
     if (sizeOf(payload.^raw) < maxSize)  
@@ -40,6 +42,7 @@ fun parsePayload(payload, maxSize) =
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log INFO" doc:id="b985d548-186e-4eb0-9bc7-556c9ab13648" message="#[vars.logMessage]" />
+		<remove-variable doc:name="Remove logMessage Variable" doc:id="0d7d0881-7f60-4446-ac8d-dc1aac04aeec" variableName="logMessage " />
 	</sub-flow>
 	<sub-flow name="log-apiStart" doc:id="0da4d0c1-604d-4f8a-ad60-1abc55e73383" >
 		<ee:transform doc:name="Transform Message" doc:id="e34407ec-72f3-4e92-ab29-e2bdc4750202" >
@@ -48,7 +51,7 @@ fun parsePayload(payload, maxSize) =
 			<ee:variables >
 				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
 import dwl::Utils
-output application/json
+output application/json indent=false
 ---
 {
 	message: "API Start"
@@ -57,6 +60,7 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log INFO" doc:id="0a258fcb-3d7b-4059-b0ed-b46046e3f3f6" message="#[vars.logMessage]" />
+		<remove-variable doc:name="Remove logMessage Variable" doc:id="99370bcb-2720-404f-81d3-abef1c8b3c32" variableName="logMessage "/>
 	</sub-flow>
 	<sub-flow name="log-apiEnd" doc:id="39c4272a-069f-402d-8444-27839f293b45" >
 		<ee:transform doc:name="Transform Message" doc:id="ccda9afa-0f38-4c68-bdf4-9e943ff34a92" >
@@ -64,7 +68,7 @@ output application/json
 			</ee:message>
 			<ee:variables >
 				<ee:set-variable variableName="logMessage" ><![CDATA[%dw 2.0
-output application/json
+output application/json indent=false
 ---
 {
 	message: "API End"
@@ -72,18 +76,21 @@ output application/json
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Log INFO" doc:id="40fc8e21-a0a2-4a4a-98b3-b65e4fcde6bd" message="#[vars.logMessage]" />
+		<remove-variable doc:name="Remove logMessage Variable" doc:id="2071ed78-8105-4544-aa84-b8a411112f75" variableName="logMessage " />
 	</sub-flow>
-	<sub-flow name="log-warn-subFlow" doc:id="69f618ce-ca55-46d3-bd56-53a9758765d6" >
-		<flow-ref doc:name="Call Create Log Message" doc:id="cd531788-9c34-45b2-ac73-5ad748b78b79" name="create-log-message-subFlow" />
+	<sub-flow name="log-warn" doc:id="69f618ce-ca55-46d3-bd56-53a9758765d6" >
+		<flow-ref doc:name="Call Create Log Message" doc:id="cd531788-9c34-45b2-ac73-5ad748b78b79" name="create-log-message" />
 		<logger level="WARN" doc:name="Log WARN" doc:id="e340f15a-f0c8-408a-867f-a69c1ce6f6cb" message="#[vars.logMessage]" />
-	</sub-flow>	
-	<sub-flow name="create-log-message-subFlow" doc:id="77e0d184-e72c-41fc-ab9e-05ef0942fa00" >
+		<remove-variable doc:name="Remove logMessage Variable" doc:id="a97b5503-920f-4bd5-959c-e21fd3f3ba6b" variableName="logMessage " />
+	
+</sub-flow>	
+	<sub-flow name="create-log-message" doc:id="77e0d184-e72c-41fc-ab9e-05ef0942fa00" >
 		<ee:transform doc:name="Create Log Message" doc:id="7d38ed64-3823-4749-956d-75df4d1c10e3">
 				<ee:message>
 				</ee:message>
 				<ee:variables>
 					<ee:set-variable variableName="logMessage"><![CDATA[%dw 2.0
-output application/json
+output application/json indent=false
 ---
 {
 }

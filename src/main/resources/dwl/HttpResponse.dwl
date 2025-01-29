@@ -1,5 +1,5 @@
 %dw 2.0
-output application/json
+output application/json indent=false
 ---
 (error.errorType.namespace default "ERROR") ++ ":" ++ (error.errorType.identifier default "UNKNOWN") match {
 	// List of all standard API-related errors.
