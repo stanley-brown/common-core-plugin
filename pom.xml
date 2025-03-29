@@ -32,6 +32,13 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+			<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.7.1</version>
+	</dependency>
+	</dependencies>
 	<distributionManagement>
 		<repository>
 			<id>anypoint-exchange-${project.groupId}</id>
@@ -45,6 +52,12 @@
 			<id>anypoint-exchange-${project.groupId}</id>
 			<name>Mule Client Exchange</name>
 			<url>https://maven.anypoint.mulesoft.com/api/v3/organizations/${project.groupId}/maven</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>anypoint-exchange-v3</id>
+			<name>Anypoint Exchange V3</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v3/maven</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
